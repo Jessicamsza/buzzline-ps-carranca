@@ -2,9 +2,9 @@
 #include <Arduino.h>
 
 //Variáveis globais
-RockyMotors motores;
-int minEsq = 1023, maxEsq = 0; 
-int minDir = 1023, maxDir = 0;
+RockyMotors motors;
+int minEsq = ADC_MAX, maxEsq = 0; 
+int minDir = ADC_MAX, maxDir = 0;
 int leituraEsq = 0; 
 int leituraDir = 0;
 
