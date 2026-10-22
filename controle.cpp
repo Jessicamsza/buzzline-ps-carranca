@@ -63,3 +63,30 @@ void debugSensores() {
   Serial.print(" | Dir: ");
   Serial.println(leituraDir);
 }
+// Parte 3:controle proporcional e botão start stop
+bool roboLigado = false;
+void verificarBotao()
+{
+    if (digitalRead(PINO_BOTAO) == LOW) // botao pressionado
+    {
+        roboLigado = !roboLigado;
+        if(!roboLigado)
+        {
+            controlarMotores(0, 0);            //para na hora sem esperar soltar
+        }
+        delay(50);                    //espera o repique passar
+        while (digitalRead(PINO_BOTAO) == LOW) { }   // espera soltar
+        delay(50);
+    }
+}
+
+void controleProporcional()
+{
+    int erro = leituraDir - leituraEsq;
+    int correcao = (int)(KP * erro);
+
+    int velEsq = constrain(VELOCIDADE_BASE + correcao, -255, 255); 
+    int velDir = constrain(VELOCIDADE_BASE - correcao, -255, 255);
+
+    controlarMotores(velEsq, velDir);
+}
