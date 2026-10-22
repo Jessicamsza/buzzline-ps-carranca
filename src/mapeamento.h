@@ -2,29 +2,25 @@
 #define MAPEAMENTO_H
 
 #include <Arduino.h>
+#include <RoboCore_Rocky.h>
 
 // --- PINOS (AJUSTAR) ---
-// Sensores
-const int PINO_SENSOR_ESQ = A0; 
-const int PINO_SENSOR_DIR = A1;
+// Sensores (confira os GPIOs no esquemático da Rocky)
+const int PINO_SENSOR_ESQ = 36;   // VP
+const int PINO_SENSOR_DIR = 39;   // VN
 
-// Ponte H 
-const int PINO_IN1 = 5; // PWM Motor Esquerdo
-const int PINO_IN2 = 4; // Ref Motor Esquerdo
-const int PINO_IN3 = 6; // PWM Motor Direito
-const int PINO_IN4 = 7; // Ref Motor Direito
-
-// Botão Start/Stop
-const int PINO_BOTAO = 2;
+// Botão Start/Stop (use um dos 2 pinos digitais livres da placa)
+const int PINO_BOTAO = 0;         // TROCAR pelo GPIO real
 
 // --- CONFIGURAÇÕES ---
+const int ADC_MAX = 4095;          // o ESP32 lê de 0 a 4095
+const int VELOCIDADE_MAX = 100;    // confirmar a escala da biblioteca
+const int VELOCIDADE_BASE = 60;
+const float KP = 0.5;
+const int TEMPO_CALIBRACAO = 8000;
 
-const int VELOCIDADE_BASE = 120;   // 0 a 255
-const float KP = 1.5;              // se oscilar muito, diminuir | se lento, aumentar
-const int TEMPO_CALIBRACAO = 8000; // 8s
-
-//--- VARIÁVEIS GLOBAIS ---
-
+// --- VARIÁVEIS GLOBAIS ---
+extern RockyMotors motors;
 extern int minEsq, maxEsq; // calibracao do sensor esquerdo
 extern int minDir, maxDir; // calibracao do sensor direito
 

@@ -2,6 +2,8 @@
 
 void setup() {
 
+  Serial.begin(115200);
+
   iniciarPinos(); // configura entradas e saidas
   calibrarSensores(); // para calibrar, deve passar os sensores sobre a linha e o chao branco
 
