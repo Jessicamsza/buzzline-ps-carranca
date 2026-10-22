@@ -7,14 +7,19 @@ int minDir = 1023, maxDir = 0;
 int leituraEsq = 0; 
 int leituraDir = 0;
 
+
 // Variáveis auxiliares
 unsigned long inicio;
 int esq, dir;
 int calibraEsq, calibraDir;
 int mapeamentoEsq, mapeamentoDir;
 
-void calibrarSensores() 
-{
+void iniciarPinos() {
+  pinMode(PINO_BOTAO, INPUT_PULLUP); 
+}
+
+// 1. Leitura e calibração dos sensores
+void calibrarSensores() {
     inicio = millis();
     pinMode(13, OUTPUT); 
     digitalWrite(13, HIGH); /// Acende o LED interno para indicar que a calibração começou
@@ -45,7 +50,34 @@ void lerSensores() {
   leituraDir = constrain(mapeamentoDir, 0, 100);
 }
 
-// DEBUG
+
+// 3. controle proporcional e botão start stop
+bool roboLigado = false;
+void verificarBotao() {
+    if (digitalRead(PINO_BOTAO) == LOW) // botao pressionado
+    {
+        roboLigado = !roboLigado;
+        if(!roboLigado)
+        {
+            controlarMotores(0, 0);            //para na hora sem esperar soltar
+        }
+        delay(50);                    //espera o repique passar
+        while (digitalRead(PINO_BOTAO) == LOW) { }   // espera soltar
+        delay(50);
+    }
+}
+
+void controleProporcional() {
+    int erro = leituraDir - leituraEsq;
+    int correcao = (int)(KP * erro);
+    
+    int velEsq = constrain(VELOCIDADE_BASE + correcao, -255, 255); 
+    int velDir = constrain(VELOCIDADE_BASE - correcao, -255, 255);
+    
+    controlarMotores(velEsq, velDir);
+}
+
+// DEBUG 
 void debugSensores() {
 
   Serial.print("Min/Max Esq: "); 
@@ -62,31 +94,4 @@ void debugSensores() {
   Serial.print(leituraEsq);
   Serial.print(" | Dir: ");
   Serial.println(leituraDir);
-}
-// Parte 3:controle proporcional e botão start stop
-bool roboLigado = false;
-void verificarBotao()
-{
-    if (digitalRead(PINO_BOTAO) == LOW) // botao pressionado
-    {
-        roboLigado = !roboLigado;
-        if(!roboLigado)
-        {
-            controlarMotores(0, 0);            //para na hora sem esperar soltar
-        }
-        delay(50);                    //espera o repique passar
-        while (digitalRead(PINO_BOTAO) == LOW) { }   // espera soltar
-        delay(50);
-    }
-}
-
-void controleProporcional()
-{
-    int erro = leituraDir - leituraEsq;
-    int correcao = (int)(KP * erro);
-
-    int velEsq = constrain(VELOCIDADE_BASE + correcao, -255, 255); 
-    int velDir = constrain(VELOCIDADE_BASE - correcao, -255, 255);
-
-    controlarMotores(velEsq, velDir);
 }

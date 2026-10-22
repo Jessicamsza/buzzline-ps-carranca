@@ -1,7 +1,7 @@
 #include "mapeamento.h"
 
 void setup() {
-
+  Serial.begin(9600);
   iniciarPinos(); // configura entradas e saidas
   calibrarSensores(); // para calibrar, deve passar os sensores sobre a linha e o chao branco
 
@@ -10,19 +10,16 @@ void setup() {
 }
 
 void loop() {
+  verificarBotao(); // verifica o estado do botao
 
-  verificarBotao(); // ve o estado do botao
-
-  if (roboLigado) {
-
-    // se o robo estiver ligado, ele le os sensores e ajusta os motores
-    
+  if (roboLigado) 
+  {    
     lerSensores(); // atualiza leituraEsq e leituraDir
+    debugSensores();
+    
     controleProporcional(); // calcula o erro e ajusta motores
 
   } else {
-    // se o robo estiver desligado, ele para os motores
     controlarMotores(0, 0);
-
   }
 }
