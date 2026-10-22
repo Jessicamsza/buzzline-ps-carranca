@@ -2,11 +2,11 @@
 #include <Arduino.h>
 
 //Variáveis globais
+RockyMotors motores;
 int minEsq = 1023, maxEsq = 0; 
 int minDir = 1023, maxDir = 0;
 int leituraEsq = 0; 
 int leituraDir = 0;
-
 
 // Variáveis auxiliares
 unsigned long inicio;
@@ -21,8 +21,8 @@ void iniciarPinos() {
 // 1. Leitura e calibração dos sensores
 void calibrarSensores() {
     inicio = millis();
-    pinMode(13, OUTPUT); 
-    digitalWrite(13, HIGH); /// Acende o LED interno para indicar que a calibração começou
+    pinMode(PINO_LED, OUTPUT); 
+    digitalWrite(PINO_LED, HIGH);
 
     while (millis() - inicio < TEMPO_CALIBRACAO)
     {
@@ -34,22 +34,28 @@ void calibrarSensores() {
         if (dir < minDir) minDir = dir;
         if (dir > maxDir) maxDir = dir;
     }
-    digitalWrite(13, LOW); // Apaga o LED para indicar que a calibração foi concluída
+    digitalWrite(PINO_LED, LOW); 
 }
 
 void lerSensores() {
   calibraEsq = analogRead(PINO_SENSOR_ESQ);
   calibraDir = analogRead(PINO_SENSOR_DIR);
 
-  //Normalização: valor da calibração mapeado para uma escala de 0 a 100 (branco - preto)
   mapeamentoEsq = map(calibraEsq, minEsq, maxEsq, 100, 0);
   mapeamentoDir = map(calibraDir, minDir, maxDir, 100, 0);
   
-  //Trava de segurança na escala de 0 a 100
   leituraEsq = constrain(mapeamentoEsq, 0, 100);
   leituraDir = constrain(mapeamentoDir, 0, 100);
 }
 
+// 2. Controle dos motores
+void controlarMotores(int velEsq, int velDir){
+    velEsq = constrain(velEsq, -VELOCIDADE_MAX, VELOCIDADE_MAX);
+    velDir = constrain(velDir, -VELOCIDADE_MAX, VELOCIDADE_MAX);
+
+    motors.setSpeedLeft(velEsq);
+    motors.setSpeedRight(velDir);
+}
 
 // 3. controle proporcional e botão start stop
 bool roboLigado = false;
@@ -71,8 +77,8 @@ void controleProporcional() {
     int erro = leituraDir - leituraEsq;
     int correcao = (int)(KP * erro);
     
-    int velEsq = constrain(VELOCIDADE_BASE + correcao, -255, 255); 
-    int velDir = constrain(VELOCIDADE_BASE - correcao, -255, 255);
+    int velEsq = constrain(VELOCIDADE_BASE + correcao, -VELOCIDADE_MAX, VELOCIDADE_MAX); 
+    int velDir = constrain(VELOCIDADE_BASE - correcao, -VELOCIDADE_MAX, VELOCIDADE_MAX);
     
     controlarMotores(velEsq, velDir);
 }

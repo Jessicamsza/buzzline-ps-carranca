@@ -2,28 +2,26 @@
 #define MAPEAMENTO_H
 
 #include <Arduino.h>
+#include <RoboCore_Rocky.h>
 
-// --- PINOS (AJUSTAR) ---
+// --- PINOS ---
 // Sensores
-const int PINO_SENSOR_ESQ = A0; 
-const int PINO_SENSOR_DIR = A1;
-
-// Ponte H 
-const int PINO_IN1 = 5; // PWM Motor Esquerdo
-const int PINO_IN2 = 4; // Ref Motor Esquerdo
-const int PINO_IN3 = 6; // PWM Motor Direito
-const int PINO_IN4 = 7; // Ref Motor Direito
+const int PINO_SENSOR_ESQ = 36; 
+const int PINO_SENSOR_DIR = 39;
 
 // Botão Start/Stop
-const int PINO_BOTAO = 2;
+const int PINO_BOTAO = 0;
+const int PINO_LED = 15;
 
 // --- CONFIGURAÇÕES ---
-
-const int VELOCIDADE_BASE = 120;   // 0 a 255
-const float KP = 1.5;              // se oscilar muito, diminuir | se lento, aumentar
-const int TEMPO_CALIBRACAO = 8000; // 8s
+const int ADC_MAX = 4095;          // O ESP32 lê de 0 a 4095
+const int VELOCIDADE_MAX = 100;    // Escala da biblioteca RoboCore
+const int VELOCIDADE_BASE = 60;
+const float KP = 0.5;              // se oscilar muito, diminuir | se lento, aumentar
+const int TEMPO_CALIBRACAO = 8000; // 8 segundos
 
 //--- VARIÁVEIS GLOBAIS ---
+extern RockyMotors motors;
 
 extern int minEsq, maxEsq; // calibracao do sensor esquerdo
 extern int minDir, maxDir; // calibracao do sensor direito
@@ -34,7 +32,6 @@ extern int leituraDir; // 100 = linha preta, 0 = branco
 extern bool roboLigado; // true = andando, false = parado
 
 // --- ASSINATURAS DAS FUNÇÕES ---
-
 void iniciarPinos();
 void calibrarSensores();
 void lerSensores();
