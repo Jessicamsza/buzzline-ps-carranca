@@ -94,4 +94,6 @@ void debugSensores() {
   Serial.print(leituraEsq);
   Serial.print(" | Dir: ");
   Serial.println(leituraDir);
+
+  delay(100); 
 }

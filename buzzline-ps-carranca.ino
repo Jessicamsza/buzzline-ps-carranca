@@ -12,14 +12,16 @@ void setup() {
 void loop() {
   verificarBotao(); // verifica o estado do botao
 
-  if (roboLigado) 
-  {    
-    lerSensores(); // atualiza leituraEsq e leituraDir
-    debugSensores();
+  if (roboLigado) {    
     
+    lerSensores(); // atualiza leituraEsq e leituraDir    
     controleProporcional(); // calcula o erro e ajusta motores
 
   } else {
     controlarMotores(0, 0);
+
+    //pode verificar a calibracao enquanto robo estiver parado
+    //lerSensores();
+    //debugSensores();
   }
 }
