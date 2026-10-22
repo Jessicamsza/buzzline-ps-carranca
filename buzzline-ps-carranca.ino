@@ -1,6 +1,4 @@
-// programa principal do robo seguidor de linha
-
-#include "base.h" // inclui as funcoes de controle do robo
+#include "mapeamento.h"
 
 void setup() {
 
@@ -23,9 +21,7 @@ void loop() {
     controleProporcional(); // calcula o erro e ajusta motores
 
   } else {
-
     // se o robo estiver desligado, ele para os motores
-
     controlarMotores(0, 0);
 
   }
